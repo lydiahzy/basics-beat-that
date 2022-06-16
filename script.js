@@ -1,4 +1,3 @@
-
 // Base
 
 // Recognise 2 players. Welcome the players, and ask Player 1 to start first
@@ -11,10 +10,6 @@
 // Compare the 2 dice results and tell who wins
 // Restart game
 
-// v3. compare dice scores and declare winner
-// v4 reset the game for continous rounds
-
-
 // version breakdown
 // v1. Roll 2 dice and return output for 1 player. Player chooses dice order and gets the correct output
 // Use loop to auto roll 2 dice, and store the results via push
@@ -24,6 +19,9 @@
 // v2. refactor code to include player 2
 // new global variable to recognise player
 // player 1 goes first, stores dice order value, then lets player 2 go
+
+// v3. compare dice scores and declare winner
+// v4 reset the game for continous rounds
 
 var GAME_STATE_ROLL_DICE = 'GAME_STATE_ROLL_DICE';
 var GAME_STATE_DICE_ORDER = 'GAME_STATE_DICE_ORDER';
@@ -77,7 +75,33 @@ var diceOrderResult = function (userInput) {
   playerRolls = []; 
 
   return `Player ${currentPlayer}, your dice result is ${playerResult}.`;
+};
 
+var compareDiceOrder = function () {
+  var resultMessage = "Player 1's score is " + playerDiceResults[0] + " and Player 2's score is " + playerDiceResults[1] + ".";
+
+  // player 1 wins
+  if (playerDiceResults[0] > playerDiceResults[1]) {
+  return resultMessage + '<br>Player 1 wins!';
+  }
+
+  // player 2 wins
+  if (playerDiceResults[1] > playerDiceResults[0]) {
+  return resultMessage + '<br>Player 2 wins!';
+  }
+
+  // It's a tie
+  if (playerDiceResults[0] > playerDiceResults[1]) {
+  return resultMessage + "<br>It's a tie!";
+  }  
+};
+
+var resetGame = function () {
+      gameState = 'GAME_STATE_ROLL_DICE';
+      currentPlayer = 1;
+      // why resetting playerRolls is not needed in the video?
+      playerRolls = [];
+      playerDiceResults = [];
 };
 
 var main = function (userInput) {
@@ -87,7 +111,7 @@ var main = function (userInput) {
       var myOutputMessage = rollDiceTwiceForPlayer();
       gameState = GAME_STATE_DICE_ORDER;
       console.log('gameStateAfterDiceRolled', gameState)
-      return myOutputMessage; 
+      return myOutputMessage;   
     }
 
     if (gameState == GAME_STATE_DICE_ORDER) {
@@ -97,15 +121,45 @@ var main = function (userInput) {
       if (currentPlayer == 1) {
         currentPlayer = 2;
         gameState = GAME_STATE_ROLL_DICE;
-        return myOutputMessage;
+        return myOutputMessage + " It is now Player 2's turn!";
       }
 
       if (currentPlayer == 2) {
         gameState = GAME_STATE_COMPARE_DICE_ORDER;
         return myOutputMessage + '<br>Press submit to calculate.';
       }
-      
-      
     }
+
+    if (gameState == GAME_STATE_COMPARE_DICE_ORDER) {
+      console.log('gameStateCompareDiceOrder', gameState)
+      console.log('Dice Results:', playerDiceResults[0], playerDiceResults[1])
+
+      var resultMessage = compareDiceOrder();
+      
+      resetGame();
+
+      return resultMessage;
+    }
+
 };
- 
+
+
+
+// for checking v4
+
+      // var resultMessage = "Player 1's score is " + playerDiceResults[0] + " and Player 2's score is " + playerDiceResults[1] + ".";
+
+      // // player 1 wins
+      // if (playerDiceResults[0] > playerDiceResults[1]) {
+      // return resultMessage + '<br>Player 1 wins!';
+      // }
+
+      // // player 2 wins
+      // if (playerDiceResults[1] > playerDiceResults[0]) {
+      // return resultMessage + '<br>Player 2 wins!';
+      // }
+
+      // // It's a tie
+      // if (playerDiceResults[0] > playerDiceResults[1]) {
+      // return resultMessage + "<br>It's a tie!";
+      // } 
