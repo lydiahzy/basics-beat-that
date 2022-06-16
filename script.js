@@ -56,11 +56,6 @@ var rollDiceTwiceForPlayer = function() {
 var diceOrderResult = function (userInput) {
   var playerResult = '';
 
-  if (userInput != 1 && userInput != 2) {
-  console.log('Flow if user does not input 1 or 2')
-  return `You have keyed in an unknown number. Please key in either '1' or '2'.`;
-  }
-
   if (userInput == 1) {
   console.log('Flow if user input 1')
   playerResult = Number(String(playerRolls[0])+String(playerRolls[1]));
@@ -82,24 +77,23 @@ var compareDiceOrder = function () {
 
   // player 1 wins
   if (playerDiceResults[0] > playerDiceResults[1]) {
-  return resultMessage + '<br>Player 1 wins!';
+  return resultMessage + '<br>Player 1 wins!<br>Press submit to play again.';
   }
 
   // player 2 wins
   if (playerDiceResults[1] > playerDiceResults[0]) {
-  return resultMessage + '<br>Player 2 wins!';
+  return resultMessage + '<br>Player 2 wins!<br>Press submit to play again.';
   }
 
   // It's a tie
-  if (playerDiceResults[0] > playerDiceResults[1]) {
-  return resultMessage + "<br>It's a tie!";
+  if (playerDiceResults[0] == playerDiceResults[1]) {
+  return resultMessage + "<br>It's a tie!<br>Press submit to play again.";
   }  
 };
 
 var resetGame = function () {
       gameState = 'GAME_STATE_ROLL_DICE';
       currentPlayer = 1;
-      // why resetting playerRolls is not needed in the video?
       playerRolls = [];
       playerDiceResults = [];
 };
@@ -116,6 +110,13 @@ var main = function (userInput) {
 
     if (gameState == GAME_STATE_DICE_ORDER) {
       console.log('gameStateDiceOrder', gameState)
+
+      // note should be != rather than !== '1'
+      if (userInput != 1 && userInput != 2) {
+      console.log('Flow if user does not input 1 or 2')
+      return `You have keyed in an unknown number. Please key in either '1' or '2'.`;
+      }
+
       myOutputMessage = diceOrderResult(userInput);
 
       if (currentPlayer == 1) {
@@ -142,24 +143,3 @@ var main = function (userInput) {
     }
 
 };
-
-
-
-// for checking v4
-
-      // var resultMessage = "Player 1's score is " + playerDiceResults[0] + " and Player 2's score is " + playerDiceResults[1] + ".";
-
-      // // player 1 wins
-      // if (playerDiceResults[0] > playerDiceResults[1]) {
-      // return resultMessage + '<br>Player 1 wins!';
-      // }
-
-      // // player 2 wins
-      // if (playerDiceResults[1] > playerDiceResults[0]) {
-      // return resultMessage + '<br>Player 2 wins!';
-      // }
-
-      // // It's a tie
-      // if (playerDiceResults[0] > playerDiceResults[1]) {
-      // return resultMessage + "<br>It's a tie!";
-      // } 
