@@ -11,7 +11,6 @@
 // Compare the 2 dice results and tell who wins
 // Restart game
 
-// v2. refactor code to include player 2
 // v3. compare dice scores and declare winner
 // v4 reset the game for continous rounds
 
@@ -22,10 +21,18 @@
 // Let user choose dice order by selecting the position in the array index. 
 // Implement input validation
 
+// v2. refactor code to include player 2
+// new global variable to recognise player
+// player 1 goes first, stores dice order value, then lets player 2 go
+
 var GAME_STATE_ROLL_DICE = 'GAME_STATE_ROLL_DICE';
 var GAME_STATE_DICE_ORDER = 'GAME_STATE_DICE_ORDER';
+var GAME_STATE_COMPARE_DICE_ORDER = 'GAME_STATE_COMPARE_DICE_ORDER';
+var currentPlayer = 1;
 var gameState = 'GAME_STATE_ROLL_DICE';
+
 var playerRolls = [];
+var playerDiceResults = [];
 
 var rollDice = function () {
   // Generate a decimal from 0 through 6, inclusive of 0 and exclusive of 6.
@@ -45,30 +52,37 @@ var rollDiceTwiceForPlayer = function() {
     counter++;    
   }
   console.log ('playerRolls', playerRolls)
-  return `Player 1 rolled Dice 1: ${playerRolls[0]} and Dice 2: ${playerRolls[1]}. <br> Please select your dice order by inputting '1' or '2'.`
+  return `Player ${currentPlayer} rolled Dice 1: ${playerRolls[0]} and Dice 2: ${playerRolls[1]}. <br> Please select your dice order by inputting '1' or '2'.`
 };
 
 var diceOrderResult = function (userInput) {
+  var playerResult = '';
+
+  if (userInput != 1 && userInput != 2) {
+  console.log('Flow if user does not input 1 or 2')
+  return `You have keyed in an unknown number. Please key in either '1' or '2'.`;
+  }
+
   if (userInput == 1) {
   console.log('Flow if user input 1')
-  var playerResult = Number(String(playerRolls[0])+String(playerRolls[1]));
-  return `Your dice result is ${playerResult}.`
+  playerResult = Number(String(playerRolls[0])+String(playerRolls[1]));
   }
 
   if (userInput == 2) {
   console.log('Flow if user input 2')
-  var playerResult = Number(String(playerRolls[1])+String(playerRolls[0]));
-  return `Your dice result is ${playerResult}.`
+  playerResult = Number(String(playerRolls[1])+String(playerRolls[0]));
   }
 
-  if (userInput !== 1 && userInput !== 2) {
-  console.log('Flow if user does not input 1 or 2')
-  return `You have keyed in an unknown number. Please key in either '1' or '2'.`
-  }
+  playerDiceResults.push(playerResult);
+  playerRolls = []; 
+
+  return `Player ${currentPlayer}, your dice result is ${playerResult}.`;
+
 };
 
 var main = function (userInput) {
   console.log('gameStateUponSubmit', gameState)
+  console.log('currentPlayer', currentPlayer)
     if (gameState == GAME_STATE_ROLL_DICE) {
       var myOutputMessage = rollDiceTwiceForPlayer();
       gameState = GAME_STATE_DICE_ORDER;
@@ -79,7 +93,19 @@ var main = function (userInput) {
     if (gameState == GAME_STATE_DICE_ORDER) {
       console.log('gameStateDiceOrder', gameState)
       myOutputMessage = diceOrderResult(userInput);
-      return myOutputMessage;
+
+      if (currentPlayer == 1) {
+        currentPlayer = 2;
+        gameState = GAME_STATE_ROLL_DICE;
+        return myOutputMessage;
+      }
+
+      if (currentPlayer == 2) {
+        gameState = GAME_STATE_COMPARE_DICE_ORDER;
+        return myOutputMessage + '<br>Press submit to calculate.';
+      }
+      
+      
     }
 };
  
